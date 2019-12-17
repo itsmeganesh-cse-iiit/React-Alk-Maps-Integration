@@ -5,6 +5,8 @@ let ALKMaps=null
 let AlkMainmap=null
 let vectorLayer=null
 let vectorMoreLayer=null
+let markerLayer=null
+let vectormaker=null
 export class Maps extends React.Component {
 
   constructor(props) {
@@ -19,6 +21,7 @@ export class Maps extends React.Component {
        vectorsChecked:false,
        removeAllLayers:false,
        vectorsMoreChecked:false,
+
     }
   }
   
@@ -83,12 +86,8 @@ export class Maps extends React.Component {
 
   addVectors(){
     vectorLayer = new ALKMaps.Layer.Vector("Initial Vector Layer");
-
-
-
     AlkMainmap.addLayers([vectorLayer]);
-   
-
+  
     var pointFeature = new ALKMaps.Feature.Vector(
       new ALKMaps.Geometry.Point(-74.755522, 40.567494).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()), 
       null, 
@@ -164,17 +163,80 @@ export class Maps extends React.Component {
 
   }
 
+  addMarkers(){
+
+    markerLayer = new ALKMaps.Layer.Markers("Marker Layer");
+    vectormaker=new ALKMaps.Layer.VectorMarkers("Vector Markers");
+
+  
+
+
+    AlkMainmap.addLayers([markerLayer,vectormaker] );
+    var iconFav = new ALKMaps.Icon(ALKMaps.IMAGE.FAVORITE, new ALKMaps.Size(30,30));
+    var mkrFav = new ALKMaps.Marker(
+      new ALKMaps.LonLat(-73.396009, 40.829567).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()),
+      iconFav.clone(), 
+      "<p><b>ETA:</b>12-12-1211 4am</p>",
+      { 
+        map: AlkMainmap,
+        mouseOver: true,
+        eventListeners:{            
+          // Show popup when click on the marker icon
+          "markerclick": function(evt){
+            var fpopup = new ALKMaps.Popup.FramedCloud("ETA ",
+              new ALKMaps.LonLat(-73.396009, 40.829567).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()),
+              new ALKMaps.Size(180, 800),
+              "<p><b>ETA:</b>12-12-1211 4am</p>",
+              iconFav,
+              true        // Show close icon
+            );        
+            AlkMainmap.addPopup(fpopup, true);
+            return false; // In order to cancel default marker over event handler
+          }
+        }
+      }    
+    );
+    markerLayer.addMarker(mkrFav);
+
+    AlkMainmap.setCenter(new ALKMaps.LonLat(-84.5, 40.5).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()), 6);
+         
+  
+    let center = new ALKMaps.LonLat(-73.996009, 40.729567).transform(
+      new ALKMaps.Projection("EPSG:4326"),
+      AlkMainmap.getProjectionObject())
+      AlkMainmap.setCenter(center, 7); 
+      
+
+  var vm = vectormaker.createMarker(center,  {
+  markerType: "green",
+  popupSize: new ALKMaps.Size(200, 80),
+  popupContentHTML: "<p><b>Driver status:</b> Dispatched<br/><b>Cell Phone:</b>87654321<br/></p>",
+  anchor: { size: new ALKMaps.Size(21,25), offset: new ALKMaps.Pixel(-5,-30)}, 
+  overflow: 'auto'
+  });
+
+  // Sample code for adding popup. 
+  // At the bottom of the page, sample code shows how to add popup by handling feature click or over event.
+  var vmPopup = vm.createPopup(true);
+  AlkMainmap.addPopup(vmPopup);
+
+  }
+
   changeHandler=(checkbox)=>{
     this.setState({
       [checkbox]:!this.state[checkbox]
     },()=>{
       // alert(this.state.markersChecked)
-          if(this.state.vectorsChecked){
-            if(vectorLayer===null){
-              this.addVectors()
-            }
-           
+
+        if(this.state.markersChecked){
+          this.addMarkers()
+        }
+        
+        if(this.state.vectorsChecked){
+          if(vectorLayer===null){
+            this.addVectors()
           }
+        }
           else{
             if(vectorLayer!==null){
               this.removeVectorLayer(vectorLayer)
@@ -183,15 +245,12 @@ export class Maps extends React.Component {
           }
           if(this.state.removeAllLayers){
             
-          
-
           }
 
           if(this.state.vectorsMoreChecked){
             if(vectorMoreLayer===null){
               this.addMoreVectors()
             }
-            
           }
           else{
             if(vectorMoreLayer!==null){
