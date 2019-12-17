@@ -38,7 +38,10 @@ export class Maps extends React.Component {
       });
 
     // Add your Alk Map Key, Won't work if no api key is placed here
-    ALKMaps.APIKey = 'YOUR API KEY';
+    // ALKMaps.APIKey = 'YOUR API KEY';
+    // Below key is example key from alkmaps website.Please make sure to change
+    // @ Subjected to copyright and patent 
+    ALKMaps.APIKey = '17CA0885B03A6B4FADBDC3D1A51DC0BD';
     var layer = new ALKMaps.Layer.BaseMap( "ALK Maps", 
       {
         style: ALKMaps.STYLE.BASIC
