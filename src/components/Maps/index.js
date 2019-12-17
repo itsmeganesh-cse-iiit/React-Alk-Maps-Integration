@@ -37,7 +37,7 @@ export class Maps extends React.Component {
     ALKMaps.APIKey = 'YOUR API KEY';
     var layer = new ALKMaps.Layer.BaseMap( "ALK Maps", 
       {
-        style: ALKMaps.STYLE.DATADARK
+        style: ALKMaps.STYLE.BASIC
       }, 
       {
         displayInLayerSwitcher: false
@@ -53,7 +53,9 @@ export class Maps extends React.Component {
   render() {
     
     return (
-      <div>
+      <div style={{display:"flex"}}>
+
+        {/* Async loading alk maps library mdn resource */}
          <Script
             url="https://maps.alk.com/api/1.2/alkmaps.js"
             onCreate={this.handleScriptCreate}
@@ -61,7 +63,35 @@ export class Maps extends React.Component {
             onLoad={this.handleScriptLoad}
           />
 
-          <div ref={this.mapContainer} style={{width:"100vw",height:"100vh"}}>
+          {/* HTML Code not related to maps */}
+          <div style={{width:"20vw"}}>
+            <h1 style={{textDecoration:"underline"}}>Alk-Maps </h1>
+            <div style={{display:"flex",alignItems:"center"}}>
+            <label for='name'>Add Markers</label>
+            <input type='checkbox' id="name" style={{width:"23px",height:"23px",backgroundColor:"green"}} />
+          </div>   
+
+          
+            <div style={{display:"flex",alignItems:"center"}}>
+            <label for='name'>Add Vectors</label>
+            <input type='checkbox' id="name" style={{width:"23px",height:"23px",backgroundColor:"green"}} />
+             </div>
+
+             <div style={{display:"flex",alignItems:"center"}}>
+            <label for='name'>Add Vector Markers</label>
+            <input type='checkbox' id="name" style={{width:"23px",height:"23px",backgroundColor:"green"}} />
+             </div>
+
+
+             <div style={{display:"flex",alignItems:"center"}}>
+            <label for='name'>Add Route </label>
+            <input type='checkbox' id="name" style={{width:"23px",height:"23px",backgroundColor:"green"}} />
+             </div>
+    
+  </div>
+
+          {/* Below tag is Imp for map loading */}
+          <div ref={this.mapContainer} style={{width:"80vw",height:"100vh",flexGrow:1}}>
           </div>
       </div>
     )
