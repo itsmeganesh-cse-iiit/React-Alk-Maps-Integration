@@ -47,6 +47,30 @@ export class Maps extends React.Component {
         displayInLayerSwitcher: false
       }
     );
+
+    // Layer Switcher control
+    const switcherControl = new ALKMaps.Control.LayerSwitcher({ 'div': ALKMaps.Util.getElement('switcher-control'), roundedCorner: false });
+    AlkMainmap.addControl(switcherControl);
+     // End
+
+    // Layer context menu contrl
+
+    const contextMenu = new ALKMaps.Control.ContextMenu({
+      'ctxMenuItems': [
+      { separator: false, text: 'Zoom In', onclick: function (e) { AlkMainmap.zoomIn(); } },
+      { separator: false, text: 'Zoom Out', onclick: function (e) { AlkMainmap.zoomOut(); } }
+      ]
+    });
+
+    AlkMainmap.addControl(contextMenu);
+    // End
+
+
+    // Custom buttons
+    const nav = new ALKMaps.Control.NavPanel();
+    AlkMainmap.addControl(nav);
+    //End
+
     AlkMainmap.addLayer(layer);
     let center = new ALKMaps.LonLat(-77, 39).transform(
       new ALKMaps.Projection("EPSG:4326"),
@@ -55,9 +79,13 @@ export class Maps extends React.Component {
   }
 
   addVectors(){
-    vectorLayer = new ALKMaps.Layer.Vector("Vector Layer");
+    vectorLayer = new ALKMaps.Layer.Vector("Initial Vector Layer");
+
+
+
     AlkMainmap.addLayers([vectorLayer]);
-    AlkMainmap.setCenter(new ALKMaps.LonLat(-74.755522, 40.567494).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()), 9);
+   
+
     var pointFeature = new ALKMaps.Feature.Vector(
       new ALKMaps.Geometry.Point(-74.755522, 40.567494).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()), 
       null, 
@@ -71,12 +99,13 @@ export class Maps extends React.Component {
       }
     );
     vectorLayer.addFeatures([pointFeature]);
+    AlkMainmap.setCenter(new ALKMaps.LonLat(-74.755522, 40.567494).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()), 9);
+
   }
 
   addMoreVectors(){
-    vectorMoreLayer = new ALKMaps.Layer.Vector("Vector Layer");
+    vectorMoreLayer = new ALKMaps.Layer.Vector("Secondary Vector Layer");
     AlkMainmap.addLayers([vectorMoreLayer]);
-    AlkMainmap.setCenter(new ALKMaps.LonLat(-74.655522, 40.367494).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()), 9);
     var vect1 = new ALKMaps.Feature.Vector(
       new ALKMaps.Geometry.Point(-74.655522, 40.367494).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()), 
       null, 
@@ -115,6 +144,8 @@ export class Maps extends React.Component {
       }
     );
     vectorMoreLayer.addFeatures([vect1,vect2,vect3]);
+    AlkMainmap.setCenter(new ALKMaps.LonLat(-74.655522, 40.367494).transform(new ALKMaps.Projection("EPSG:4326"), AlkMainmap.getProjectionObject()), 9);
+
   }
 
   removeVectorLayer(layer){
@@ -145,13 +176,13 @@ export class Maps extends React.Component {
             if(vectorLayer!==null){
               this.removeVectorLayer(vectorLayer)
               vectorLayer=null
-            }
-            
+            } 
           }
-          // if(this.state.removeAllLayers){
+          if(this.state.removeAllLayers){
+            
+          
 
-          //   this.removeAll()
-          // }
+          }
 
           if(this.state.vectorsMoreChecked){
             if(vectorMoreLayer===null){
